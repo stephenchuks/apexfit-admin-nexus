@@ -1,7 +1,37 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, PieChart, Pie, Cell, Legend
+} from 'recharts';
 
 export default function SuperAdminDashboard() {
+  // Revenue data
+  const revenueData = [
+    { month: 'Jan', revenue: 8000 },
+    { month: 'Feb', revenue: 9200 },
+    { month: 'Mar', revenue: 7400 },
+    { month: 'Apr', revenue: 10600 },
+    { month: 'May', revenue: 9800 },
+    { month: 'Jun', revenue: 11200 },
+  ];
+
+  // Branch distribution data
+  const branchData = [
+    { branch: 'Downtown', members: 120 },
+    { branch: 'Uptown', members: 95 },
+    { branch: 'Midtown', members: 80 },
+    { branch: 'Suburb', members: 65 },
+  ];
+
+  // Subscription data
+  const subData = [
+    { name: 'App Only', value: 300 },
+    { name: 'Gym + App', value: 450 },
+    { name: 'PT Bundle', value: 150 },
+  ];
+  const COLORS = ['#0d9488', '#059669', '#f59e0b'];
+
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Super-Admin Dashboard</h1>
@@ -52,27 +82,59 @@ export default function SuperAdminDashboard() {
           <CardHeader>
             <CardTitle>Revenue Chart</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px] bg-muted/30 flex items-center justify-center">
-            {/* Placeholder for Revenue Chart */}
-            <p className="text-muted-foreground">Revenue chart will be displayed here</p>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={revenueData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip formatter={(value) => [`$${value}`, 'Revenue']}/>
+                <Line type="monotone" dataKey="revenue" stroke="#0d9488" strokeWidth={3} dot />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
         <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Members by Branch</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px] bg-muted/30 flex items-center justify-center">
-            {/* Placeholder for Branch Distribution Chart */}
-            <p className="text-muted-foreground">Branch distribution chart will be displayed here</p>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={branchData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="branch" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="members" fill="#0d9488" />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
         <Card className="col-span-7">
           <CardHeader>
             <CardTitle>Subscription Breakdown</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px] bg-muted/30 flex items-center justify-center">
-            {/* Placeholder for Subscription Chart */}
-            <p className="text-muted-foreground">Subscription data will be displayed here</p>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={subData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%" 
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  label
+                >
+                  {subData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend verticalAlign="bottom" height={36} />
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>

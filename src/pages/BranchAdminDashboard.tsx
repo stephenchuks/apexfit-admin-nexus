@@ -1,6 +1,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
 
 export default function BranchAdminDashboard() {
   // Dummy data for member table
@@ -8,6 +11,14 @@ export default function BranchAdminDashboard() {
     { id: 1, name: "Jane Cooper", joined: "01/10/2023", status: "Active" },
     { id: 2, name: "Michael Foster", joined: "15/11/2023", status: "Active" },
     { id: 3, name: "Emily Wilson", joined: "02/12/2023", status: "Inactive" }
+  ];
+
+  // Dummy data for revenue chart
+  const branchRevenueData = [
+    { week: 'Week 1', revenue: 2400 },
+    { week: 'Week 2', revenue: 3000 },
+    { week: 'Week 3', revenue: 2800 },
+    { week: 'Week 4', revenue: 3300 },
   ];
 
   return (
@@ -87,9 +98,16 @@ export default function BranchAdminDashboard() {
         <CardHeader>
           <CardTitle>Monthly Revenue Chart</CardTitle>
         </CardHeader>
-        <CardContent className="h-[300px] bg-muted/30 flex items-center justify-center">
-          {/* Placeholder for Revenue Chart */}
-          <p className="text-muted-foreground">Revenue chart will be displayed here</p>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={branchRevenueData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="week" />
+              <YAxis />
+              <Tooltip formatter={(value) => [`$${value}`, 'Revenue']}/>
+              <Line type="monotone" dataKey="revenue" stroke="#0d9488" strokeWidth={3} dot />
+            </LineChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>

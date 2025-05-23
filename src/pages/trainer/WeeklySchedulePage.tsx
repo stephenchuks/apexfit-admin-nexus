@@ -1,13 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { useState } from "react";
 
 export default function WeeklySchedulePage() {
-  // Mock days of the week
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  
-  // Mock time slots
-  const timeSlots = ["8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", 
-                     "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"];
+  const [date, setDate] = useState(new Date());
   
   // Mock sessions (static placeholders)
   const sessions = [
@@ -16,9 +14,19 @@ export default function WeeklySchedulePage() {
     { id: 3, client: "Casey Brown", day: "Friday", time: "4:00 PM", type: "Flexibility" },
   ];
 
-  // Helper function to check if a session exists for a given day and time
-  const getSession = (day: string, time: string) => {
-    return sessions.find(session => session.day === day && session.time === time);
+  const getDayName = (dateObj: Date) => {
+    return dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+  };
+
+  // Function to check if a date has a session
+  const hasSession = (date: Date) => {
+    const dayName = getDayName(date);
+    return sessions.some(session => session.day === dayName);
+  };
+  
+  const getSessionsForDate = (date: Date) => {
+    const dayName = getDayName(date);
+    return sessions.filter(session => session.day === dayName);
   };
   
   return (
@@ -26,7 +34,12 @@ export default function WeeklySchedulePage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold tracking-tight">Weekly Schedule</h1>
         <div className="flex gap-2">
-          <button className="bg-muted px-3 py-1 rounded-md text-sm">Today</button>
+          <button 
+            className="bg-muted px-3 py-1 rounded-md text-sm"
+            onClick={() => setDate(new Date())}
+          >
+            Today
+          </button>
           <button className="bg-muted px-3 py-1 rounded-md text-sm">This Week</button>
           <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
             Add Session
@@ -36,47 +49,41 @@ export default function WeeklySchedulePage() {
       
       <Card>
         <CardHeader>
-          <CardTitle>June 12 - June 18, 2023</CardTitle>
+          <CardTitle>
+            {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+          </CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="p-3 border-b border-r bg-muted/50 w-20">Time</th>
-                  {days.map(day => (
-                    <th key={day} className="p-3 border-b border-r bg-muted/50 w-40 text-center">{day}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {timeSlots.map(time => (
-                  <tr key={time}>
-                    <td className="p-3 border-b border-r bg-muted/30 text-sm font-medium">{time}</td>
-                    {days.map(day => {
-                      const session = getSession(day, time);
-                      
-                      return (
-                        <td key={`${day}-${time}`} className="p-0 border-b border-r h-16 relative">
-                          {session ? (
-                            <div className={`absolute inset-1 rounded p-1 text-xs ${
-                              session.type === 'Strength' 
-                                ? 'bg-blue-100 text-blue-800' 
-                                : session.type === 'Cardio'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-purple-100 text-purple-800'
-                            }`}>
-                              <p className="font-medium">{session.client}</p>
-                              <p>{session.type}</p>
-                            </div>
-                          ) : null}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <CardContent>
+          <div className="custom-calendar-container mb-6">
+            <Calendar
+              onChange={setDate}
+              value={date}
+              className="mx-auto rounded-md"
+              calendarType="US"
+              tileContent={({ date, view }) => 
+                view === 'month' && hasSession(date) ? (
+                  <div className="text-xs text-center mt-1">
+                    <div className="bg-blue-100 text-blue-800 rounded-full px-1 w-full">
+                      {getSessionsForDate(date).length} sessions
+                    </div>
+                  </div>
+                ) : null
+              }
+            />
+            <style jsx>{`
+              .custom-calendar-container :global(.react-calendar) {
+                width: 100%;
+                border: none;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+              }
+              .custom-calendar-container :global(.react-calendar__tile--active) {
+                background: #0d9488;
+                color: white;
+              }
+              .custom-calendar-container :global(.react-calendar__tile--now) {
+                background: #e5e7eb;
+              }
+            `}</style>
           </div>
         </CardContent>
       </Card>
@@ -182,10 +189,6 @@ export default function WeeklySchedulePage() {
           </CardContent>
         </Card>
       </div>
-      
-      {/* TODO: Implement calendar functionality */}
-      {/* TODO: Connect to session scheduling API */}
-      {/* TODO: Add drag-and-drop for scheduling */}
     </div>
   );
 }

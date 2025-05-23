@@ -1,7 +1,6 @@
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
-  "homepage": "https://stephenchuks.github.io/apexfit-admin-nexus",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,9 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -52,6 +49,7 @@
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
+    "react-calendar": "^5.1.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
